@@ -1,6 +1,6 @@
 [package]
 name = "hyper-request-body"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["vkill <vkill.net@gmail.com>"]
 edition = "2021"
 description = "hyper Request Body"
@@ -11,6 +11,9 @@ documentation = "https://docs.rs/hyper-request-body"
 keywords = []
 categories = []
 readme = "README.md"
+
+[package.metadata.docs.rs]
+all-features = true
 
 [features]
 _priv_test_warp_request_body = ["warp-request-body"]
