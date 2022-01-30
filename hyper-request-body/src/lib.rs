@@ -139,9 +139,9 @@ pub fn stream_request_to_body_request(
 
 #[cfg(test)]
 mod tests {
-    use futures_util::{stream::BoxStream, StreamExt as _, TryStreamExt};
-
     use super::*;
+
+    use futures_util::{stream::BoxStream, StreamExt as _, TryStreamExt};
 
     #[tokio::test]
     async fn test_with_hyper_body() {
