@@ -65,6 +65,38 @@ impl Body {
             })),
         }
     }
+
+    #[cfg(feature = "warp")]
+    // https://github.com/seanmonstar/warp/blob/v0.3.2/src/filters/body.rs#L291
+    pub fn from_warp_body_stream(
+        stream: impl Stream<Item = Result<impl warp::Buf + 'static, warp::Error>> + Send + 'static,
+    ) -> Self {
+        use futures_util::TryStreamExt as _;
+
+        // Copy from warp_request_body::utils::buf_to_bytes
+        fn buf_to_bytes(mut buf: impl warp::Buf) -> Bytes {
+            let mut bytes_mut = bytes::BytesMut::new();
+            while buf.has_remaining() {
+                bytes_mut.extend_from_slice(buf.chunk());
+                let cnt = buf.chunk().len();
+                buf.advance(cnt);
+            }
+            bytes_mut.freeze()
+        }
+
+        Self::with_stream(
+            stream
+                .map_ok(buf_to_bytes)
+                .map_err(|err| Error::Other(err.into())),
+        )
+    }
+}
+
+#[cfg(feature = "warp-request-body")]
+impl From<warp_request_body::Body> for Body {
+    fn from(body: warp_request_body::Body) -> Self {
+        Self::from_warp_request_body(body)
+    }
 }
 
 impl Body {
@@ -202,6 +234,23 @@ mod tests {
             futures_util::stream::once(async { Ok(Bytes::copy_from_slice(b"foo")) }).boxed();
         let warp_body = warp_request_body::Body::with_stream(stream);
         let body = Body::from_warp_request_body(warp_body);
+        assert!(matches!(body, Body::Stream { inner: _ }));
+        assert_eq!(
+            body.to_bytes_async().await.unwrap(),
+            Bytes::copy_from_slice(b"foo")
+        );
+    }
+
+    #[cfg(feature = "warp")]
+    #[tokio::test]
+    async fn test_from_warp_body_stream() {
+        //
+        let stream = warp::test::request()
+            .body("foo")
+            .filter(&warp::body::stream())
+            .await
+            .unwrap();
+        let body = Body::from_warp_body_stream(stream);
         assert!(matches!(body, Body::Stream { inner: _ }));
         assert_eq!(
             body.to_bytes_async().await.unwrap(),
