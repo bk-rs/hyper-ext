@@ -4,6 +4,7 @@ use hyper::{Body as HyperBody, Error as HyperError};
 
 use crate::Error;
 
+// Copy from warp_request_body::utils::hyper_body_to_bytes
 pub async fn hyper_body_to_bytes(mut hyper_body: HyperBody) -> Result<Bytes, HyperError> {
     let mut bytes_mut = BytesMut::new();
     while let Some(bytes) = hyper_body.next().await {
