@@ -23,12 +23,18 @@ pin_project! {
     }
 }
 
-impl fmt::Display for Body {
+impl fmt::Debug for Body {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::HyperBody { inner: _ } => write!(f, "HyperBody"),
             Self::Stream { inner: _ } => write!(f, "Stream"),
         }
+    }
+}
+
+impl fmt::Display for Body {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
     }
 }
 
@@ -89,6 +95,12 @@ impl Body {
                 .map_ok(buf_to_bytes)
                 .map_err(|err| Error::Other(err.into())),
         )
+    }
+}
+
+impl From<HyperBody> for Body {
+    fn from(body: HyperBody) -> Self {
+        Self::with_hyper_body(body)
     }
 }
 
