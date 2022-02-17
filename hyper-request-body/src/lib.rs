@@ -1,3 +1,7 @@
+pub use hyper::Body as HyperBody;
+#[cfg(feature = "warp-request-body")]
+pub use warp_request_body;
+
 use core::{
     fmt,
     pin::Pin,
@@ -6,7 +10,7 @@ use core::{
 
 use bytes::Bytes;
 use futures_util::Stream;
-use hyper::{Body as HyperBody, Request as HyperRequest};
+use hyper::Request as HyperRequest;
 use pin_project_lite::pin_project;
 
 pub mod error;
