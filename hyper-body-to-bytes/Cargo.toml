@@ -1,0 +1,22 @@
+[package]
+name = "hyper-body-to-bytes"
+version = "0.1.0"
+authors = ["vkill <vkill.net@gmail.com>"]
+edition = "2021"
+description = "hyper Body to_bytes"
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/bk-rs/hyper-ext"
+homepage = "https://github.com/bk-rs/hyper-ext"
+documentation = "https://docs.rs/hyper-body-to-bytes"
+keywords = []
+categories = []
+readme = "README.md"
+
+[dependencies]
+hyper = { version = "0.14", default-features = false, features = ["stream"] }
+bytes = { version = "1", default-features = false }
+
+futures-util = { version = "0.3", default-features = false }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

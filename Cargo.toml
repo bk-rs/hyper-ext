@@ -1,4 +1,5 @@
 [workspace]
 members = [
+    "hyper-body-to-bytes",
     "hyper-request-body",
 ]
