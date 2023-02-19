@@ -29,6 +29,8 @@ pin-project-lite = { version = "0.2", default-features = false }
 warp-request-body = { version = "0.2", default-features = false, optional = true }
 warp = { version = "0.3", default-features = false, optional = true }
 
+hyper-body-to-bytes = { version = "0.1", default-features = false, path = "../hyper-body-to-bytes" }
+
 [dev-dependencies]
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
